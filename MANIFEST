@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Redis-DistLock.t
+lib/Redis/DistLock.pm

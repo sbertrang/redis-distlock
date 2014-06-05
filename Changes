@@ -1,0 +1,6 @@
+Revision history for Perl extension Redis::DistLock.
+
+0.01  Thu Jun  5 13:14:32 2014
+	- original version; created by h2xs 1.23 with options
+		-AXn Redis::DistLock
+
