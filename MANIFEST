@@ -1,6 +1,9 @@
 Changes
+lib/Redis/DistLock.pm
 Makefile.PL
 MANIFEST
 README
-t/Redis-DistLock.t
-lib/Redis/DistLock.pm
+t/000_load.t
+t/001_repeat.t
+t/002_timeout.t
+t/003_workers.t

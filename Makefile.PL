@@ -1,12 +1,20 @@
-use 5.012002;
+use 5.005;
+use strict;
+use warnings;
+
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
+
 WriteMakefile(
-    NAME              => 'Redis::DistLock',
-    VERSION_FROM      => 'lib/Redis/DistLock.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/Redis/DistLock.pm', # retrieve abstract from module
-       AUTHOR         => 'A. U. Thor <simon@>') : ()),
+    NAME           => "Redis::DistLock",
+    VERSION_FROM   => "lib/Redis/DistLock.pm",
+    PREREQ_PM      => {
+		"Digest::SHA"    => 0,
+        "MIME::Base64"    => 0,
+        "Redis"        => 0,
+        "Time::HiRes"     => 0,
+    },
+    ABSTRACT_FROM  => "lib/Redis/DistLock.pm",
+    AUTHOR         => 'Simon Bertrang <janus@cpan.org>',
 );
+
+# vim: ts=4 sw=4 et:

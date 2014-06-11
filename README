@@ -1,40 +1,45 @@
-Redis-DistLock version 0.01
-===========================
+NAME
+    Redis::DistLock - Distributed lock manager using Redis
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+SYNOPSIS
+      use Redis::DistLock;
+      my $rd = Redis::DistLock->new( servers => [qw[ localhost:6379 ]] );
+      my $mutex = $rd->lock( "foo", 1000 );
+      # ... critical section ...
+      $rd->release( $mutex );
 
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+DESCRIPTION
+    This is an implementation of the Redlock algorithm using Redis for
+    distributed lock management.
 
-INSTALLATION
+METHODS
+  new( ... )
+    servers
+        Array reference with servers to connect to or Redis objects to use.
 
-To install this module type the following:
+    retry_count
+        Maximum number of times to try to acquire the lock.
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+    retry_delay
+        Maximum delay between retries in microseconds(?).
 
-DEPENDENCIES
+  lock( $resource, $ttl [ $value ] )
+    Acquire the lock for the given resource with the given time to live
+    until the lock expires. Without a given value will generate a unique
+    identifier.
 
-This module requires these other modules and libraries:
+  release( $lock )
+    Release the previously acquired lock.
 
-  blah blah blah
+SEE ALSO
+    <http://redis.io/topics/distlock>
 
-COPYRIGHT AND LICENCE
+AUTHOR
+    Simon Bertrang, <janus@cpan.org>
 
-Put the correct copyright and licence information here.
+COPYRIGHT AND LICENSE
+    Copyright (C) 2014 by Simon Bertrang
 
-Copyright (C) 2014 by A. U. Thor
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
-at your option, any later version of Perl 5 you may have available.
-
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 

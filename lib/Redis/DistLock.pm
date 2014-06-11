@@ -1,84 +1,177 @@
 package Redis::DistLock;
 
-use 5.012002;
 use strict;
 use warnings;
 
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use Redis::DistLock ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	
-);
-
 our $VERSION = '0.01';
 
+use Digest::SHA qw( sha1_hex );
+use MIME::Base64 qw( encode_base64 );
+use Redis;
+use Time::HiRes qw( time usleep );
 
-# Preloaded methods go here.
+sub RETRY_COUNT()       { 3 }
+sub RETRY_DELAY()       { 200 }
+sub DRIFT_FACTOR()      { 0.01 }
+sub RELEASE_SCRIPT()    { '
+if redis.call( "get", KEYS[1] ) == ARGV[1] then
+    return redis.call( "del", KEYS[1] )
+else
+    return 0
+end
+' }
+sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
+
+sub new
+{
+    my $class = shift;
+    my %args = @_ == 1 && ref( $_[0] )
+             ? %{ $_[0] }
+             : @_
+    ;
+
+    my @servers;
+
+    for my $server ( @{ $args{servers} } ) {
+        my $redis = ref( $server )
+                  ? $server
+                  : Redis->new( server => $server )
+        ;
+        push( @servers, $redis );
+
+        # load script on all servers
+        my $sha1 = $redis->script_load( RELEASE_SCRIPT );
+
+        # ensure the script is everywhere the same
+        if ( $sha1 ne RELEASE_SHA1 ) {
+            die( "FATAL: script load results in different checksum!" );
+        }
+    }
+
+    my $self = bless( {
+        servers        => \@servers,
+        quorum        => ( @servers > 1 ? @servers / 2 + 1 : 1 ),
+        retry_count    => $args{retry_count} || RETRY_COUNT,
+        retry_delay    => $args{retry_delay} || RETRY_DELAY,
+    }, $class );
+
+    return $self;
+}
+
+sub _get_random_id
+{
+    encode_base64( join( "", map chr( int( rand() * 256 ) ), 1 .. 24 ), "" );
+}
+
+sub lock
+{
+    my ( $self, $resource, $ttl, $value ) = @_;
+    my $retry_count = $self->{retry_count};
+
+    $value = _get_random_id()
+        unless defined( $value );
+
+    while ( $retry_count-- > 0 ) {
+        my $start = time();
+        my $ok = 0;
+
+        for my $redis ( @{ $self->{servers} } ) {
+            $ok += eval {
+                $redis->set( $resource, $value, "NX", "PX", $ttl ) && 1
+            } || 0;
+        }
+
+        my $drift = $ttl * DRIFT_FACTOR + 2;
+        my $validity = $ttl - ( time() - $start ) - $drift;
+
+        if ( $ok >= $self->{quorum} && $validity > 0 ) {
+            return {
+                validity    => $validity,
+                resource    => $resource,
+                value        => $value,
+            };
+        }
+
+        usleep( rand( $self->{retry_delay} * 1000 ) );
+    }
+
+    return undef;
+}
+
+sub release
+{
+    my ( $self, $lock ) = @_;
+
+    for my $redis ( @{ $self->{servers} } ) {
+        $redis->evalsha( RELEASE_SHA1, 1, @$lock{ qw{ resource value } } );
+    }
+}
 
 1;
+
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Redis::DistLock - Perl extension for blah blah blah
+Redis::DistLock - Distributed lock manager using Redis
 
 =head1 SYNOPSIS
 
   use Redis::DistLock;
-  blah blah blah
+  my $rd = Redis::DistLock->new( servers => [qw[ localhost:6379 ]] );
+  my $mutex = $rd->lock( "foo", 1000 );
+  # ... critical section ...
+  $rd->release( $mutex );
 
 =head1 DESCRIPTION
 
-Stub documentation for Redis::DistLock, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+This is an implementation of the Redlock algorithm using Redis for distributed
+lock management.
 
-Blah blah blah.
+=head1 METHODS
 
-=head2 EXPORT
+=head2 new( ... )
 
-None by default.
+=over 4
 
+=item servers
 
+Array reference with servers to connect to or L<Redis> objects to use.
+
+=item retry_count
+
+Maximum number of times to try to acquire the lock.
+
+=item retry_delay
+
+Maximum delay between retries in microseconds(?).
+
+=back
+
+=head2 lock( $resource, $ttl [ $value ] )
+
+Acquire the lock for the given resource with the given time to live until the lock expires.
+Without a given value will generate a unique identifier.
+
+=head2 release( $lock )
+
+Release the previously acquired lock.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<http://redis.io/topics/distlock>
 
 =head1 AUTHOR
 
-A. U. Thor, E<lt>simon@E<gt>
+Simon Bertrang, E<lt>janus@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by A. U. Thor
+Copyright (C) 2014 by Simon Bertrang
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.12.2 or,
-at your option, any later version of Perl 5 you may have available.
-
+it under the same terms as Perl itself.
 
 =cut
+
+# vim: ts=4 sw=4 et:
