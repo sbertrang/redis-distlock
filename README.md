@@ -11,6 +11,7 @@ SYNOPSIS
     $rd->release( $mutex );
 
 DESCRIPTION
+
     This is an implementation of the Redlock algorithm using Redis for
     distributed lock management.
 
@@ -18,6 +19,7 @@ DESCRIPTION
     options to the SET command.
 
 METHODS
+
   new( ... )
     servers
         Array reference with servers to connect to or Redis objects to use.
@@ -41,13 +43,16 @@ METHODS
     Release the previously acquired lock.
 
 SEE ALSO
+
     <http://redis.io/topics/distlock>
 
 AUTHORS
+
     Simon Bertrang, <janus@cpan.org>
     Ryan Bastic, <ryan@bastic.net>
 
 COPYRIGHT AND LICENSE
+
     Copyright (C) 2014 by Simon Bertrang
 
     This library is free software; you can redistribute it and/or modify it
