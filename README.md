@@ -34,13 +34,13 @@ METHODS
           Flag to check redis server version(s) in the constructor to ensure
           compatibility. Defaults to 1.
   
-      lock( $resource, $ttl [ $value ] )
-          Acquire the lock for the given resource with the given time to live (in
-          seconds) until the lock expires. Without a given value will generate a
-          unique identifier.
+    lock( $resource, $ttl [ $value ] )
+        Acquire the lock for the given resource with the given time to live (in
+        seconds) until the lock expires. Without a given value will generate a
+        unique identifier.
   
-      release( $lock )
-         Release the previously acquired lock.
+    release( $lock )
+        Release the previously acquired lock.
 
 SEE ALSO
 
