@@ -7,3 +7,5 @@ t/000_load.t
 t/001_repeat.t
 t/002_timeout.t
 t/003_workers.t
+t/004_release.t
+t/005_version.t
