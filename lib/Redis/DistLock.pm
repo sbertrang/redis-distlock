@@ -3,7 +3,7 @@ package Redis::DistLock;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Digest::SHA qw( sha1_hex );
 use MIME::Base64 qw( encode_base64 );

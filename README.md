@@ -15,7 +15,7 @@ DESCRIPTION
     This is an implementation of the Redlock algorithm using Redis for
     distributed lock management.
 
-    NOTE: This needs at least Redis version 2.6.12 which brings adds new
+    NOTE: This needs at least Redis version 2.6.12 which adds new
     options to the SET command.
 
 METHODS
@@ -44,7 +44,7 @@ METHODS
 
 SEE ALSO
 
-    <http://redis.io/topics/distlock>
+    http://redis.io/topics/distlock
 
 AUTHORS
 
