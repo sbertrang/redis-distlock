@@ -10,8 +10,6 @@ use MIME::Base64 qw( encode_base64 );
 use Redis;
 use Time::HiRes qw( time );
 
-my @locks; # so we can implement DESTROY()
-
 sub VERSION_CHECK()     { 1 }
 sub RETRY_COUNT()       { 3 }
 sub RETRY_DELAY()       { 0.2 }
