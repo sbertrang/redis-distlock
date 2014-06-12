@@ -147,7 +147,7 @@ Redis::DistLock - Distributed lock manager using Redis
   my $rd = Redis::DistLock->new( servers => [qw[ localhost:6379 ]] );
   my $mutex = $rd->lock( "foo", 1000 );
   die( "failed to get a lock" )
-    if ! $mutex;
+      if ! $mutex;
   # ... critical section ...
   $rd->release( $mutex );
 
