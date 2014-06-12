@@ -128,6 +128,9 @@ Redis::DistLock - Distributed lock manager using Redis
 This is an implementation of the Redlock algorithm using Redis for distributed
 lock management.
 
+B<NOTE>: This needs at least Redis version 2.6.12 which brings adds new options
+to the SET command.
+
 =head1 METHODS
 
 =head2 new( ... )
