@@ -102,6 +102,11 @@ sub release
 {
     my ( $self, $lock ) = @_;
 
+    return unless ref( $lock ) &&
+               exists( $lock->{resource} ) &&
+               exists( $lock->{value} )
+    ;
+
     for my $redis ( @{ $self->{servers} } ) {
         $redis->evalsha( RELEASE_SHA1, 1, @$lock{ qw{ resource value } } );
     }
