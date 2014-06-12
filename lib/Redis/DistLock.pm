@@ -10,6 +10,7 @@ use MIME::Base64 qw( encode_base64 );
 use Redis;
 use Time::HiRes qw( time );
 
+sub VERSION_CHECK()     { 1 }
 sub RETRY_COUNT()       { 3 }
 sub RETRY_DELAY()       { 0.2 }
 sub DRIFT_FACTOR()      { 0.01 }
@@ -30,6 +31,11 @@ sub new
              : @_
     ;
 
+    my $version_check = exists( $args{version_check} )
+                      ?         $args{version_check}
+                      :               VERSION_CHECK
+    ;
+
     my @servers;
 
     for my $server ( @{ $args{servers} } ) {
@@ -38,6 +44,21 @@ sub new
                   : Redis->new( server => $server )
         ;
         push( @servers, $redis );
+
+        if ( $version_check ) {
+            my $info = $redis->info();
+
+            die( "FATAL: cannot find the right redis version (needs at least 2.6.12 -- $1, $2, $3)" )
+                unless $info &&
+                       $info->{redis_version} &&
+                       $info->{redis_version} =~ m!\A ([0-9]+) \. ([0-9]+) \. ([0-9]+) \z!x &&
+                       (
+                         ( $1 >  2 ) ||
+                         ( $1 == 2 && $2 >  6 ) ||
+                         ( $1 == 2 && $2 == 6 && $3 >= 12 )
+                       )
+            ;
+        }
 
         # load script on all servers
         my $sha1 = $redis->script_load( RELEASE_SCRIPT );
@@ -153,6 +174,10 @@ Maximum number of times to try to acquire the lock.
 =item retry_delay
 
 Maximum delay between retries in seconds.
+
+=item version_check
+
+Flag to check redis server version(s) in the constructor to ensure compatibility. Defaults to C<1>.
 
 =back
 
