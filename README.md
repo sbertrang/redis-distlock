@@ -21,26 +21,26 @@ DESCRIPTION
 METHODS
 
     new( ... )
-    servers
-        Array reference with servers to connect to or Redis objects to use.
+      servers
+          Array reference with servers to connect to or Redis objects to use.
 
-    retry_count
-        Maximum number of times to try to acquire the lock.
+      retry_count
+          Maximum number of times to try to acquire the lock.
 
-    retry_delay
-        Maximum delay between retries in seconds.
-
-    version_check
-        Flag to check redis server version(s) in the constructor to ensure
-        compatibility. Defaults to 1.
-
-    lock( $resource, $ttl [ $value ] )
-      Acquire the lock for the given resource with the given time to live (in
-      seconds) until the lock expires. Without a given value will generate a
-      unique identifier.
-
-    release( $lock )
-      Release the previously acquired lock.
+      retry_delay
+          Maximum delay between retries in seconds.
+  
+      version_check
+          Flag to check redis server version(s) in the constructor to ensure
+          compatibility. Defaults to 1.
+  
+      lock( $resource, $ttl [ $value ] )
+          Acquire the lock for the given resource with the given time to live (in
+          seconds) until the lock expires. Without a given value will generate a
+          unique identifier.
+  
+      release( $lock )
+         Release the previously acquired lock.
 
 SEE ALSO
 
