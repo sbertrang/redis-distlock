@@ -10,6 +10,8 @@ use MIME::Base64 qw( encode_base64 );
 use Redis;
 use Time::HiRes qw( time );
 
+my @locks; # so we can implement DESTROY()
+
 sub VERSION_CHECK()     { 1 }
 sub RETRY_COUNT()       { 3 }
 sub RETRY_DELAY()       { 0.2 }
@@ -22,6 +24,13 @@ else
 end
 ' }
 sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
+
+sub DESTROY {
+    my $self = shift;
+    foreach (@locks) {
+        $self->release($_);
+    }
+}
 
 sub new
 {
@@ -106,11 +115,13 @@ sub lock
         my $validity = $ttl - ( time() - $start ) - $drift;
 
         if ( $ok >= $self->{quorum} && $validity > 0 ) {
-            return {
+            my $l = {
                 validity    => $validity,
                 resource    => $resource,
                 value        => $value,
             };
+            push @locks, $l;
+            return $l;
         }
 
         select( undef, undef, undef, rand( $self->{retry_delay} ) );
