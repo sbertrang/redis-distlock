@@ -27,7 +27,7 @@ sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
 sub DESTROY {
     my $self = shift;
-    foreach (@locks) {
+    foreach (@{ ($self->{locks} || []) }) {
         $self->release($_);
     }
 }
@@ -83,6 +83,7 @@ sub new
         quorum        => ( @servers > 1 ? @servers / 2 + 1 : 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
+        locks          => []
     }, $class );
 
     return $self;
@@ -120,7 +121,7 @@ sub lock
                 resource    => $resource,
                 value        => $value,
             };
-            push @locks, $l;
+            push @{ $self->{locks} }, $l;
             return $l;
         }
 
