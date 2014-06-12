@@ -8,10 +8,10 @@ our $VERSION = '0.01';
 use Digest::SHA qw( sha1_hex );
 use MIME::Base64 qw( encode_base64 );
 use Redis;
-use Time::HiRes qw( time usleep );
+use Time::HiRes qw( time );
 
 sub RETRY_COUNT()       { 3 }
-sub RETRY_DELAY()       { 200 }
+sub RETRY_DELAY()       { 0.2 }
 sub DRIFT_FACTOR()      { 0.01 }
 sub RELEASE_SCRIPT()    { '
 if redis.call( "get", KEYS[1] ) == ARGV[1] then
@@ -81,7 +81,7 @@ sub lock
             } || 0;
         }
 
-        my $drift = $ttl * DRIFT_FACTOR + 2;
+        my $drift = $ttl * DRIFT_FACTOR + 0.002;
         my $validity = $ttl - ( time() - $start ) - $drift;
 
         if ( $ok >= $self->{quorum} && $validity > 0 ) {
@@ -92,7 +92,7 @@ sub lock
             };
         }
 
-        usleep( rand( $self->{retry_delay} * 1000 ) );
+        select( undef, undef, undef, rand( $self->{retry_delay} ) );
     }
 
     return undef;
@@ -147,14 +147,14 @@ Maximum number of times to try to acquire the lock.
 
 =item retry_delay
 
-Maximum delay between retries in microseconds(?).
+Maximum delay between retries in seconds.
 
 =back
 
 =head2 lock( $resource, $ttl [ $value ] )
 
-Acquire the lock for the given resource with the given time to live until the lock expires.
-Without a given value will generate a unique identifier.
+Acquire the lock for the given resource with the given time to live (in seconds)
+until the lock expires. Without a given value will generate a unique identifier.
 
 =head2 release( $lock )
 
