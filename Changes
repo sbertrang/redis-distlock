@@ -1,5 +1,10 @@
 Revision history for Perl extension Redis::DistLock.
 
+0.02  Thu Jun 12 14:07:10 CEST 2014
+	- switch to seconds instead of milliseconds
+	- check for a valid mutex in the release method
+	- implement redis version check on object creation
+
 0.01  Wed Jun 11 10:05:26 CEST 2014
 	- initial version/release
 
