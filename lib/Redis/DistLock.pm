@@ -3,7 +3,7 @@ package Redis::DistLock;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Digest::SHA qw( sha1_hex );
 use MIME::Base64 qw( encode_base64 );
@@ -71,7 +71,7 @@ sub new
 
     my $self = bless( {
         servers        => \@servers,
-        quorum        => ( @servers > 1 ? int(@servers / 2 + 1) : 1 ),
+        quorum         => int( @servers > 1 ? @servers / 2 + 1 : 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
     }, $class );
