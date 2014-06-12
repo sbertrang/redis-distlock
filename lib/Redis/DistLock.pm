@@ -204,6 +204,13 @@ until the lock expires. Without a given value will generate a unique identifier.
 
 Release the previously acquired lock.
 
+=head1 CAVEATS
+
+Ctrl-C'ing a running Perl script does not call DESTROY().
+This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
+Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
+the timeliness of your locks being released.
+
 =head1 SEE ALSO
 
 L<http://redis.io/topics/distlock>
