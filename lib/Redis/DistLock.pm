@@ -23,6 +23,12 @@ end
 ' }
 sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
+sub LOGGER {
+    return sub {
+        warn $_[0];
+    }
+}
+
 sub DESTROY {
     my $self = shift;
     foreach (@{ ($self->{locks} || []) }) {
@@ -42,6 +48,10 @@ sub new
                       ?         $args{version_check}
                       :               VERSION_CHECK
     ;
+
+    my $logger = exists ( $args{logger} )
+                      ?   $args{logger}
+                      :         LOGGER
 
     my @servers;
 
@@ -81,7 +91,8 @@ sub new
         quorum        => ( @servers > 1 ? int(@servers / 2 + 1) : 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
-        locks          => []
+        locks          => [],
+        logger         => $logger
     }, $class );
 
     return $self;
@@ -107,7 +118,10 @@ sub lock
         for my $redis ( @{ $self->{servers} } ) {
             $ok += eval {
                 $redis->set( $resource, $value, "NX", "PX", $ttl ) && 1
-            } || 0;
+            };
+            if ($@) {
+                $self->{logger}->($@);
+            }
         }
 
         my $drift = $ttl * DRIFT_FACTOR + 0.002;
@@ -190,6 +204,11 @@ Maximum delay between retries in seconds.
 =item version_check
 
 Flag to check redis server version(s) in the constructor to ensure compatibility. Defaults to C<1>.
+
+=item logger
+
+An optional subroutine that will be called with errors as it's parameter, should and when they occur.
+By default, errors are currently just warns.
 
 =back
 
