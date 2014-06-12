@@ -52,14 +52,17 @@ sub new
     my $logger = exists ( $args{logger} )
                       ?   $args{logger}
                       :         LOGGER
+	;
 
     my @servers;
 
     for my $server ( @{ $args{servers} } ) {
-        my $redis = ref( $server )
+        my $redis = eval {
+            ref( $server )
                   ? $server
                   : Redis->new( server => $server )
-        ;
+        };
+        next if !$redis;
         push( @servers, $redis );
 
         if ( $version_check ) {
