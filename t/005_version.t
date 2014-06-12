@@ -4,11 +4,6 @@ use warnings;
 
 use Test::More;
 
-BEGIN {
-    plan skip_all => "needs TEST_SERVER variable for server testing"
-        unless $ENV{TEST_SERVER};
-}
-
 use_ok( "Redis::DistLock" );
 
 
