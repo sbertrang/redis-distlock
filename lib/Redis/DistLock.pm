@@ -213,9 +213,10 @@ the timeliness of your locks being released.
 
 L<http://redis.io/topics/distlock>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Simon Bertrang, E<lt>janus@cpan.orgE<gt>
+Ryan Bastic, E<lt>ryan@bastic.net<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
