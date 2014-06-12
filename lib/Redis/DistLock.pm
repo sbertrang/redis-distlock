@@ -23,12 +23,6 @@ end
 ' }
 sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
-sub LOGGER {
-    return sub {
-        warn $_[0];
-    }
-}
-
 sub DESTROY {
     my $self = shift;
     foreach (@{ ($self->{locks} || []) }) {
@@ -51,7 +45,7 @@ sub new
 
     my $logger = exists ( $args{logger} )
                       ?   $args{logger}
-                      :         LOGGER
+                      :         \&CORE::warn
 	;
 
     my @servers;
@@ -91,7 +85,7 @@ sub new
 
     my $self = bless( {
         servers        => \@servers,
-        quorum        => ( @servers > 1 ? int(@servers / 2 + 1) : 1 ),
+        quorum         => ( @{$args{servers}} > 1 ? int( @{ $args{servers} } / 2 + 1) : 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
         locks          => [],
