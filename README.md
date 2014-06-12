@@ -58,3 +58,8 @@ COPYRIGHT AND LICENSE
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
 
+DISCLAIMER
+
+	This code implements an algorithm which is currently a proposal, it was not
+	formally analyzed. Make sure to understand how it works before using it in
+	production environments.
