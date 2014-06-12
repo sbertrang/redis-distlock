@@ -53,7 +53,7 @@ AUTHORS
 
 COPYRIGHT AND LICENSE
 
-    Copyright (C) 2014 by Simon Bertrang
+    Copyright (C) 2014 by Simon Bertrang, Ryan Bastic.
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
