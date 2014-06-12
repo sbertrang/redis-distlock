@@ -179,7 +179,8 @@ Maximum delay between retries in seconds.
 
 =item version_check
 
-Flag to check redis server version(s) in the constructor to ensure compatibility. Defaults to C<1>.
+Flag to check redis server version(s) in the constructor to ensure compatibility.
+Defaults to C<1>.
 
 =back
 
@@ -195,6 +196,12 @@ Release the previously acquired lock.
 =head1 SEE ALSO
 
 L<http://redis.io/topics/distlock>
+
+=head1 ACKNOWLEDGMENT
+
+This module was originally developed at Booking.com. With approval from
+Booking.com, this module was released as open source, for which the author
+would like to express his gratitude.
 
 =head1 AUTHOR
 

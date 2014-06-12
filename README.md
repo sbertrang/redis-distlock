@@ -38,7 +38,8 @@ to the `SET` command making this implementation possible.
 
 - version\_check
 
-    Flag to check redis server version(s) in the constructor to ensure compatibility. Defaults to `1`.
+    Flag to check redis server version(s) in the constructor to ensure compatibility.
+    Defaults to `1`.
 
 ## lock( $resource, $ttl \[ $value \] )
 
@@ -52,6 +53,12 @@ Release the previously acquired lock.
 # SEE ALSO
 
 [http://redis.io/topics/distlock](http://redis.io/topics/distlock)
+
+# ACKNOWLEDGMENT
+
+This module was originally developed at Booking.com. With approval from
+Booking.com, this module was released as open source, for which the author
+would like to express his gratitude.
 
 # AUTHOR
 
