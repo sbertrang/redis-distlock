@@ -117,7 +117,9 @@ sub lock
 
         for my $redis ( @{ $self->{servers} } ) {
             $ok += eval {
-                $redis->set( $resource, $value, "NX", "PX", $ttl ) && 1
+                my $v = 0;
+                $v = 1 if $redis->set( $resource, $value, "NX", "PX", $ttl );
+                $v;
             };
             if ($@) {
                 $self->{logger}->($@);
