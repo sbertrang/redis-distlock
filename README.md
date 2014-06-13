@@ -80,8 +80,8 @@ would like to express his gratitude.
 
 # AUTHORS
 
-Simon Bertrang, <janus@cpan.org>
-Ryan Bastic, <ryan@bastic.net>
+- Simon Bertrang, <janus@cpan.org>
+- Ryan Bastic, <ryan@bastic.net>
 
 # COPYRIGHT AND LICENSE
 

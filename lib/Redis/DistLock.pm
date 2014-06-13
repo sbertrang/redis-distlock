@@ -246,8 +246,17 @@ would like to express his gratitude.
 
 =head1 AUTHORS
 
+=over 4
+
+=item *
+
 Simon Bertrang, E<lt>janus@cpan.orgE<gt>
+
+=item *
+
 Ryan Bastic, E<lt>ryan@bastic.netE<gt>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
