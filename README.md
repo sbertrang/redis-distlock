@@ -24,6 +24,10 @@ to the `SET` command making this implementation possible.
 
 ## new( ... )
 
+Takes a hash or hash reference with below arguments and returns a lock manager
+instance. Since this module currently does not repair initially failed
+connections it checks for the majority of connections or `die()`s.
+
 - servers
 
     Array reference with servers to connect to or [Redis](https://metacpan.org/pod/Redis) objects to use.

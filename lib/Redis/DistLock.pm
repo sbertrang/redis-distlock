@@ -201,6 +201,10 @@ to the C<SET> command making this implementation possible.
 
 =head2 new( ... )
 
+Takes a hash or hash reference with below arguments and returns a lock manager
+instance. Since this module currently does not repair initially failed
+connections it checks for the majority of connections or C<die()>s.
+
 =over 4
 
 =item servers
