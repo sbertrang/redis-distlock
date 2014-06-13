@@ -43,8 +43,8 @@ to the `SET` command making this implementation possible.
 
 - logger
 
-    An optional subroutine that will be called with errors as it's parameter, should and when they occur.
-    By default, errors are currently just warns.
+    Optional subroutine that will be called with errors as parameter, should any occur.
+    By default, errors are currently just warnings. To disable pass `undef`.
 
 - auto\_release
 
