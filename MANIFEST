@@ -10,3 +10,4 @@ t/003_workers.t
 t/004_release.t
 t/005_version.t
 t/006_quorum.t
+t/007_logger.t
