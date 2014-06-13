@@ -46,7 +46,7 @@ sub new
 
     my $logger = exists ( $args{logger} )
                       ?   $args{logger}
-                      :         \&CORE::warn
+                      :   sub { warn @_ }
 	;
 
     my @servers;
