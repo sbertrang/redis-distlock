@@ -90,7 +90,7 @@ sub new
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
         locks          => [],
-        logger         => $logger,
+        logger         => $logger || sub {},
         auto_release   => $args{auto_release} || 0,
     }, $class );
 
