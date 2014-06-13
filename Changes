@@ -2,6 +2,7 @@ Revision history for Perl extension Redis::DistLock.
 
 0.03  Thu Jun 12 23:36:17 CEST 2014
 	- fix for quorum calculation by Ryan Bastic
+	- fix expire time value fallout from switching to seconds
 
 0.02  Thu Jun 12 14:07:10 CEST 2014
 	- switch to seconds instead of milliseconds
