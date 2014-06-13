@@ -46,6 +46,16 @@ to the `SET` command making this implementation possible.
     An optional subroutine that will be called with errors as it's parameter, should and when they occur.
     By default, errors are currently just warns.
 
+- auto\_release
+
+    Flag to enable automatic release of all locks when the lock manager instance
+    goes out of scope. Defaults to `0`.
+
+    **CAVEAT**: Ctrl-C'ing a running Perl script does not call DESTROY().
+    This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
+    Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
+    the timeliness of your locks being released.
+
 ## lock( $resource, $ttl \[ $value \] )
 
 Acquire the lock for the resource with the given time to live (in seconds)
@@ -54,13 +64,6 @@ until the lock expires. Without a value will generate a unique identifier.
 ## release( $lock )
 
 Release the previously acquired lock.
-
-# CAVEATS
-
-Ctrl-C'ing a running Perl script does not call DESTROY().
-This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
-Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
-the timeliness of your locks being released.
 
 # SEE ALSO
 

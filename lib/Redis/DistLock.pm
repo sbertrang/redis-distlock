@@ -25,6 +25,7 @@ sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
 sub DESTROY {
     my $self = shift;
+    return unless $self->{auto_release};
     foreach (@{ ($self->{locks} || []) }) {
         $self->release($_);
     }
@@ -89,7 +90,8 @@ sub new
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
         locks          => [],
-        logger         => $logger
+        logger         => $logger,
+        auto_release   => $args{auto_release} || 0,
     }, $class );
 
     return $self;
@@ -210,6 +212,16 @@ Defaults to C<1>.
 An optional subroutine that will be called with errors as it's parameter, should and when they occur.
 By default, errors are currently just warns.
 
+=item auto_release
+
+Flag to enable automatic release of all locks when the lock manager instance
+goes out of scope. Defaults to C<0>.
+
+B<CAVEAT>: Ctrl-C'ing a running Perl script does not call DESTROY().
+This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
+Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
+the timeliness of your locks being released.
+
 =back
 
 =head2 lock( $resource, $ttl [ $value ] )
@@ -220,13 +232,6 @@ until the lock expires. Without a value will generate a unique identifier.
 =head2 release( $lock )
 
 Release the previously acquired lock.
-
-=head1 CAVEATS
-
-Ctrl-C'ing a running Perl script does not call DESTROY().
-This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
-Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
-the timeliness of your locks being released.
 
 =head1 SEE ALSO
 
