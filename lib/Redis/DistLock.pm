@@ -46,20 +46,24 @@ sub new
                       :               VERSION_CHECK
     ;
 
-    my $logger = exists ( $args{logger} )
-                      ?   $args{logger}
-                      :   sub { warn @_ }
-	;
+    my $logger = exists( $args{logger} )
+                      ?  $args{logger}
+                      :  sub { warn @_ }
+    ;
 
     my @servers;
 
     for my $server ( @{ $args{servers} } ) {
+        # connect might fail
         my $redis = eval {
             ref( $server )
-                  ? $server
-                  : Redis->new( server => $server )
+               ? $server
+               : Redis->new( server => $server )
         };
-        next if !$redis;
+        unless ( $redis ) {
+            $logger->( $@ );
+            next;
+        }
         push( @servers, $redis );
 
         if ( $version_check ) {
@@ -117,14 +121,15 @@ sub lock
         my $ok = 0;
 
         for my $redis ( @{ $self->{servers} } ) {
+            # count successful locks
             $ok += eval {
-                my $v = 0;
-                $v = 1 if $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 );
-                $v;
+                # response needs to be true
+                $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 ) &&
+                1
             } || 0;
-            if ($@) {
-                $self->{logger}->($@);
-            }
+
+            $self->{logger}->( $@ )
+                if $@;
         }
 
         my $drift = $ttl * DRIFT_FACTOR + 0.002;
