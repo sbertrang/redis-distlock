@@ -122,12 +122,10 @@ sub lock {
         my $ok = 0;
 
         for my $redis ( @{ $self->{servers} } ) {
-            # count successful locks
+            # count successful locks, response only needs to be true
             $ok += eval {
-                # response needs to be true
-                $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 ) &&
-                1
-            } || 0;
+                $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 )
+            } ? 1 : 0;
 
             $self->{logger}->( $@ )
                 if $@;
