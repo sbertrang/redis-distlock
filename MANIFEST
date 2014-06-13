@@ -2,7 +2,7 @@ Changes
 lib/Redis/DistLock.pm
 Makefile.PL
 MANIFEST
-README
+README.md
 t/000_load.t
 t/001_repeat.t
 t/002_timeout.t
