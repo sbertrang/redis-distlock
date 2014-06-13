@@ -241,10 +241,15 @@ the timeliness of your locks being released.
 
 =back
 
-=head2 lock( $resource, $ttl [ $value ] )
+=head2 lock( $resource, $ttl )
 
 Acquire the lock for the resource with the given time to live (in seconds)
-until the lock expires. Without a value will generate a unique identifier.
+until the lock expires. Without a value generates a 32 character base64
+string based on 24 random input bytes.
+
+=head2 lock( $resource, $ttl, $value )
+
+Same as lock() but with a known value instead of a random string.
 
 =head2 release( $lock )
 

@@ -60,10 +60,15 @@ connections it checks for the majority of connections or `die()`s.
     Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
     the timeliness of your locks being released.
 
-## lock( $resource, $ttl \[ $value \] )
+## lock( $resource, $ttl )
 
 Acquire the lock for the resource with the given time to live (in seconds)
-until the lock expires. Without a value will generate a unique identifier.
+until the lock expires. Without a value generates a 32 character base64
+string based on 24 random input bytes.
+
+## lock( $resource, $ttl, $value )
+
+Same as lock() but with a known value instead of a random string.
 
 ## release( $lock )
 
