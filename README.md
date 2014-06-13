@@ -41,6 +41,11 @@ to the `SET` command making this implementation possible.
     Flag to check redis server version(s) in the constructor to ensure compatibility.
     Defaults to `1`.
 
+- logger
+
+    An optional subroutine that will be called with errors as it's parameter, should and when they occur.
+    By default, errors are currently just warns.
+
 ## lock( $resource, $ttl \[ $value \] )
 
 Acquire the lock for the resource with the given time to live (in seconds)
@@ -49,6 +54,13 @@ until the lock expires. Without a value will generate a unique identifier.
 ## release( $lock )
 
 Release the previously acquired lock.
+
+# CAVEATS
+
+Ctrl-C'ing a running Perl script does not call DESTROY().
+This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
+Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
+the timeliness of your locks being released.
 
 # SEE ALSO
 
@@ -66,9 +78,10 @@ This module was originally developed at Booking.com. With approval from
 Booking.com, this module was released as open source, for which the author
 would like to express his gratitude.
 
-# AUTHOR
+# AUTHORS
 
 Simon Bertrang, <janus@cpan.org>
+Ryan Bastic, <ryan@bastic.net>
 
 # COPYRIGHT AND LICENSE
 

@@ -23,6 +23,13 @@ end
 ' }
 sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
+sub DESTROY {
+    my $self = shift;
+    foreach (@{ ($self->{locks} || []) }) {
+        $self->release($_);
+    }
+}
+
 sub new
 {
     my $class = shift;
@@ -36,13 +43,20 @@ sub new
                       :               VERSION_CHECK
     ;
 
+    my $logger = exists ( $args{logger} )
+                      ?   $args{logger}
+                      :         \&CORE::warn
+	;
+
     my @servers;
 
     for my $server ( @{ $args{servers} } ) {
-        my $redis = ref( $server )
+        my $redis = eval {
+            ref( $server )
                   ? $server
                   : Redis->new( server => $server )
-        ;
+        };
+        next if !$redis;
         push( @servers, $redis );
 
         if ( $version_check ) {
@@ -71,9 +85,11 @@ sub new
 
     my $self = bless( {
         servers        => \@servers,
-        quorum         => int( @servers > 1 ? @servers / 2 + 1 : 1 ),
+        quorum         => int( @{ $args{servers} } > 1 ? @{ $args{servers} } / 2 + 1 : 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
+        locks          => [],
+        logger         => $logger
     }, $class );
 
     return $self;
@@ -98,19 +114,26 @@ sub lock
 
         for my $redis ( @{ $self->{servers} } ) {
             $ok += eval {
-                $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 ) && 1
-            } || 0;
+                my $v = 0;
+                $v = 1 if $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 );
+                $v;
+            };
+            if ($@) {
+                $self->{logger}->($@);
+            }
         }
 
         my $drift = $ttl * DRIFT_FACTOR + 0.002;
         my $validity = $ttl - ( time() - $start ) - $drift;
 
         if ( $ok >= $self->{quorum} && $validity > 0 ) {
-            return {
+            my $l = {
                 validity    => $validity,
                 resource    => $resource,
                 value        => $value,
             };
+            push @{ $self->{locks} }, $l;
+            return $l;
         }
 
         select( undef, undef, undef, rand( $self->{retry_delay} ) );
@@ -182,6 +205,11 @@ Maximum delay between retries in seconds. Defaults to C<0.2>.
 Flag to check redis server version(s) in the constructor to ensure compatibility.
 Defaults to C<1>.
 
+=item logger
+
+An optional subroutine that will be called with errors as it's parameter, should and when they occur.
+By default, errors are currently just warns.
+
 =back
 
 =head2 lock( $resource, $ttl [ $value ] )
@@ -192,6 +220,13 @@ until the lock expires. Without a value will generate a unique identifier.
 =head2 release( $lock )
 
 Release the previously acquired lock.
+
+=head1 CAVEATS
+
+Ctrl-C'ing a running Perl script does not call DESTROY().
+This means you will have to wait for Redis to expire your locks for you if the script is killed manually.
+Even if you do implement a signal handler, it can be quite unreliable in Perl and does not guarantee
+the timeliness of your locks being released.
 
 =head1 SEE ALSO
 
@@ -209,9 +244,10 @@ This module was originally developed at Booking.com. With approval from
 Booking.com, this module was released as open source, for which the author
 would like to express his gratitude.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Simon Bertrang, E<lt>janus@cpan.orgE<gt>
+Ryan Bastic, E<lt>ryan@bastic.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
