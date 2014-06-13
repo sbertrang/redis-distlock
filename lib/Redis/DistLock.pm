@@ -57,7 +57,7 @@ sub new {
         # connect might fail
         my $redis = ref( $server )
                        ? $server
-                       : eval { Redis->new( server => $server ) }
+                       : eval { Redis->new( server => $server, encoding => undef ) }
         ;
         unless ( $redis ) {
             $logger->( $@ );
