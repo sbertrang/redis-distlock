@@ -119,7 +119,7 @@ sub lock
                 my $v = 0;
                 $v = 1 if $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 );
                 $v;
-            };
+            } || 0;
             if ($@) {
                 $self->{logger}->($@);
             }
