@@ -197,6 +197,12 @@ Release the previously acquired lock.
 
 L<http://redis.io/topics/distlock>
 
+=head1 DISCLAIMER
+
+This code implements an algorithm which is currently a proposal, it was not
+formally analyzed. Make sure to understand how it works before using it in
+production environments.
+
 =head1 ACKNOWLEDGMENT
 
 This module was originally developed at Booking.com. With approval from
