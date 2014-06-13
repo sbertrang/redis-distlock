@@ -33,8 +33,7 @@ sub DESTROY {
         for @{ $self->{locks} };
 }
 
-sub new
-{
+sub new {
     my $class = shift;
     my %args = @_ == 1 && ref( $_[0] )
              ? %{ $_[0] }
@@ -103,13 +102,11 @@ sub new
     return $self;
 }
 
-sub _get_random_id
-{
+sub _get_random_id {
     encode_base64( join( "", map chr( int( rand() * 256 ) ), 1 .. 24 ), "" );
 }
 
-sub lock
-{
+sub lock {
     my ( $self, $resource, $ttl, $value ) = @_;
     my $retry_count = $self->{retry_count};
 
@@ -155,8 +152,7 @@ sub lock
     return undef;
 }
 
-sub release
-{
+sub release {
     my ( $self, $lock ) = @_;
 
     return unless ref( $lock ) &&
