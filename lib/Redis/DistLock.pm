@@ -25,10 +25,12 @@ sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 
 sub DESTROY {
     my $self = shift;
-    return unless $self->{auto_release};
-    foreach (@{ ($self->{locks} || []) }) {
-        $self->release($_);
-    }
+
+    # only has locks when auto release is enabled
+    return if @{ $self->{locks} || [] } == 0;
+
+    $self->release( $_ )
+        for @{ $self->{locks} };
 }
 
 sub new
@@ -129,13 +131,17 @@ sub lock
         my $validity = $ttl - ( time() - $start ) - $drift;
 
         if ( $ok >= $self->{quorum} && $validity > 0 ) {
-            my $l = {
+            my $lock = {
                 validity    => $validity,
                 resource    => $resource,
-                value        => $value,
+                value       => $value,
             };
-            push @{ $self->{locks} }, $l;
-            return $l;
+
+            # track lock on demand only
+            push( @{ $self->{locks} }, $lock )
+                if $self->{auto_release};
+
+            return $lock;
         }
 
         select( undef, undef, undef, rand( $self->{retry_delay} ) );
