@@ -78,8 +78,8 @@ production environments.
 # ACKNOWLEDGMENT
 
 This module was originally developed at Booking.com. With approval from
-Booking.com, this module was released as open source, for which the author
-would like to express his gratitude.
+Booking.com, this module was released as open source, for which the authors
+would like to express their gratitude.
 
 # AUTHORS
 
