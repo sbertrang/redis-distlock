@@ -98,7 +98,7 @@ sub lock
 
         for my $redis ( @{ $self->{servers} } ) {
             $ok += eval {
-                $redis->set( $resource, $value, "NX", "PX", $ttl ) && 1
+                $redis->set( $resource, $value, "NX", "PX", $ttl * 1000 ) && 1
             } || 0;
         }
 

@@ -27,12 +27,12 @@ for my $n ( 0 .. $#hosts ) {
 # take a random one to get a lock
 my $pick = int rand $#rds;
 
-my $lock = $rds[ $pick ]->lock( "foo", 1000, $hosts[ $pick ] );
+my $lock = $rds[ $pick ]->lock( "foo", 1, $hosts[ $pick ] );
 
 ok( $lock, "got a lock" );
 
 for my $n ( grep $_ != $pick, 0 .. $#rds ) {
-    ok( ! $rds[ $n ]->lock( "foo", 1000, $hosts[ $n ] ), "already locked" );
+    ok( ! $rds[ $n ]->lock( "foo", 1, $hosts[ $n ] ), "already locked" );
 }
 
 $rds[ $pick ]->release( $lock );

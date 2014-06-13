@@ -15,12 +15,12 @@ my $rd = Redis::DistLock->new(
     servers => [ split( m!,!, $ENV{TEST_SERVER} ) ],
 );
 
-my $lock = $rd->lock( "foo", 10000 );
+my $lock = $rd->lock( "foo", 10 );
 
 ok( $lock, "got a lock" );
 
 for ( 1 .. 3 ) {
-    my $more = $rd->lock( "foo", 10000 );
+    my $more = $rd->lock( "foo", 10 );
 
     ok( ! $more, "already locked!" );
 }
