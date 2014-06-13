@@ -6,7 +6,7 @@ Redis::DistLock - Distributed lock manager using Redis
 
     use Redis::DistLock;
     my $rd = Redis::DistLock->new( servers => [qw[ localhost:6379 ]] );
-    my $mutex = $rd->lock( "foo", 1000 );
+    my $mutex = $rd->lock( "foo", 10 );
     die( "failed to get a lock" )
         if ! $mutex;
     # ... critical section ...
@@ -30,11 +30,11 @@ to the `SET` command making this implementation possible.
 
 - retry\_count
 
-    Maximum number of times to try to acquire the lock.
+    Maximum number of times to try to acquire the lock. Defaults to `3`.
 
 - retry\_delay
 
-    Maximum delay between retries in seconds.
+    Maximum delay between retries in seconds. Defaults to `0.2`.
 
 - version\_check
 
@@ -43,8 +43,8 @@ to the `SET` command making this implementation possible.
 
 ## lock( $resource, $ttl \[ $value \] )
 
-Acquire the lock for the given resource with the given time to live (in seconds)
-until the lock expires. Without a given value will generate a unique identifier.
+Acquire the lock for the resource with the given time to live (in seconds)
+until the lock expires. Without a value will generate a unique identifier.
 
 ## release( $lock )
 
