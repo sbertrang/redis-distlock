@@ -8,13 +8,21 @@ WriteMakefile(
     NAME           => "Redis::DistLock",
     VERSION_FROM   => "lib/Redis/DistLock.pm",
     PREREQ_PM      => {
-		"Digest::SHA"    => 0,
-        "MIME::Base64"    => 0,
+        "Digest::SHA"  => 0,
+        "MIME::Base64" => 0,
         "Redis"        => 0,
-        "Time::HiRes"     => 0,
+        "Time::HiRes"  => 0,
     },
     ABSTRACT_FROM  => "lib/Redis/DistLock.pm",
-    AUTHOR         => 'Simon Bertrang <janus@cpan.org>',
+    AUTHOR         => [
+        'Simon Bertrang <janus@cpan.org>',
+        'Ryan Bastic <ryan@bastic.net>',
+    ],
+    META_MERGE     => {
+        resources      => {
+            repository     => 'https://github.com/sbertrang/redis-distlock',
+        },
+    },
 );
 
 # vim: ts=4 sw=4 et:
