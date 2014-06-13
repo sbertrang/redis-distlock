@@ -50,15 +50,15 @@ sub new {
                       :  sub { warn @_ }
     ;
 
+    my $quorum = int( @{ $args{servers} } / 2 + 1 );
     my @servers;
 
     for my $server ( @{ $args{servers} } ) {
         # connect might fail
-        my $redis = eval {
-            ref( $server )
-               ? $server
-               : Redis->new( server => $server )
-        };
+        my $redis = ref( $server )
+                       ? $server
+                       : eval { Redis->new( server => $server ) }
+        ;
         unless ( $redis ) {
             $logger->( $@ );
             next;
@@ -89,9 +89,13 @@ sub new {
         }
     }
 
+    if ( @servers < $quorum ) {
+        die( "FATAL: could not establish enough connections (" . int( @servers ) . " < $quorum)" );
+    }
+
     my $self = bless( {
         servers        => \@servers,
-        quorum         => int( @{ $args{servers} } / 2 + 1 ),
+        quorum         => $quorum,
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
         locks          => [],
