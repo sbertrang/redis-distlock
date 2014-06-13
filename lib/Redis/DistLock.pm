@@ -86,7 +86,7 @@ sub new
 
     my $self = bless( {
         servers        => \@servers,
-        quorum         => int( @{ $args{servers} } > 1 ? @{ $args{servers} } / 2 + 1 : 1 ),
+        quorum         => int( @{ $args{servers} } / 2 + 1 ),
         retry_count    => $args{retry_count} || RETRY_COUNT,
         retry_delay    => $args{retry_delay} || RETRY_DELAY,
         locks          => [],
