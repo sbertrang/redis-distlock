@@ -65,6 +65,11 @@ until the lock expires. Without a value will generate a unique identifier.
 
 Release the previously acquired lock.
 
+## release( $resource, $value )
+
+Version of release() that allows to maintain state solely in Redis when
+the value is known, e.g. a hostname.
+
 # SEE ALSO
 
 [http://redis.io/topics/distlock](http://redis.io/topics/distlock)

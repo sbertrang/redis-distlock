@@ -24,6 +24,16 @@ $rd->release( { non => "sense" } );
 # invalid type
 ok( ! eval { $rd->release( [] ) }, "invalid lock data type" );
 
+ok( eval{ $rd->release( undef, undef ); 1 }, "undef arguments" );
+
+# hash reference
+$rd->lock( some => 3 );
+$rd->release( { resource => "some", value => 3 } );
+
+# unnamed arguments
+$rd->lock( some => 3 );
+$rd->release( some => 3 );
+
 done_testing();
 
 # vim: ts=4 sw=4 et:

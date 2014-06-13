@@ -153,15 +153,17 @@ sub lock {
 }
 
 sub release {
-    my ( $self, $lock ) = @_;
-
-    return unless ref( $lock ) &&
-               exists( $lock->{resource} ) &&
-               exists( $lock->{value} )
+    my $self = shift;
+    my ( $resource, $value ) = @_ == 1 && ref( $_[0] )
+                             ? @{ $_[0] }{ qw{ resource value } }
+                             : @_
     ;
 
+    defined or $_ = ""
+        for $resource, $value;
+
     for my $redis ( @{ $self->{servers} } ) {
-        $redis->evalsha( RELEASE_SHA1, 1, @$lock{ qw{ resource value } } );
+        $redis->evalsha( RELEASE_SHA1, 1, $resource, $value );
     }
 }
 
@@ -239,6 +241,11 @@ until the lock expires. Without a value will generate a unique identifier.
 =head2 release( $lock )
 
 Release the previously acquired lock.
+
+=head2 release( $resource, $value )
+
+Version of release() that allows to maintain state solely in Redis when
+the value is known, e.g. a hostname.
 
 =head1 SEE ALSO
 
