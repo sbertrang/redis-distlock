@@ -1,5 +1,8 @@
 Revision history for Perl extension Redis::DistLock.
 
+0.05  Sat Jun 14 16:10:50 CEST 2014
+	- add license and bucktracker link
+
 0.04  Sat Jun 14 15:08:56 CEST 2014
 	- add auto_release option to release all locks when the manager object
 	  is destroyed (from Ryan Bastic)
