@@ -81,7 +81,8 @@ the value is known, e.g. a hostname.
 
 # SEE ALSO
 
-[http://redis.io/topics/distlock](http://redis.io/topics/distlock)
+- [http://redis.io/topics/distlock](http://redis.io/topics/distlock)
+- [Redis](https://metacpan.org/pod/Redis)
 
 # DISCLAIMER
 

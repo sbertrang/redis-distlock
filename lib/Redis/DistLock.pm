@@ -260,7 +260,17 @@ the value is known, e.g. a hostname.
 
 =head1 SEE ALSO
 
+=over 4
+
+=item *
+
 L<http://redis.io/topics/distlock>
+
+=item *
+
+L<Redis>
+
+=back
 
 =head1 DISCLAIMER
 
