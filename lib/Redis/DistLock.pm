@@ -190,7 +190,9 @@ Redis::DistLock - Distributed lock manager using Redis
 =head1 DESCRIPTION
 
 This is an implementation of the Redlock algorithm using Redis for distributed
-lock management.
+lock management. It enables lightweight distributed locks in order to prevent
+cronjob overruns, help with queue processing, many workers of which only one
+should run at a time, and similar situations.
 
 B<NOTE>: This needs at least Redis version 2.6.12 which adds new options
 to the C<SET> command making this implementation possible.
