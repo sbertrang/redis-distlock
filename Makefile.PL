@@ -20,9 +20,12 @@ WriteMakefile(
     ],
     META_MERGE     => {
         resources      => {
+            license        => 'http://dev.perl.org/licenses/',
             repository     => 'https://github.com/sbertrang/redis-distlock',
+            bugtracker     => 'https://github.com/sbertrang/redis-distlock/issues',
         },
     },
+    LICENSE        => 'perl',
 );
 
 # vim: ts=4 sw=4 et:
