@@ -2,6 +2,9 @@
 use strict;
 use warnings;
 
+use lib qw( t/lib );
+use My::Redis;
+
 use Test::More;
 
 use_ok( "Redis::DistLock" );
@@ -30,24 +33,5 @@ ok( ! $lock, "no lock, no logger, no noise" );
 
 
 done_testing();
-
-package My::Redis;
-
-use strict;
-use warnings;
-
-sub info {
-    return { redis_version => $_[0]{version} };
-}
-
-sub script_load {
-    return Redis::DistLock::RELEASE_SHA1();
-}
-
-sub set {
-    die "JUST MOCKING AROUND";
-}
-
-1;
 
 # vim: ts=4 sw=4 et:

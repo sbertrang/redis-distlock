@@ -4,6 +4,9 @@ use warnings;
 
 use Test::More;
 
+use lib qw( t/lib );
+use My::Redis;
+
 use_ok( "Redis::DistLock" );
 
 my $redis = bless( { version => "2.6.12" }, "My::Redis" );
@@ -23,20 +26,5 @@ for my $test ( @tests ) {
 }
 
 done_testing();
-
-package My::Redis;
-
-use strict;
-use warnings;
-
-sub info {
-    return { redis_version => $_[0]{version} };
-}
-
-sub script_load {
-    return Redis::DistLock::RELEASE_SHA1();
-}
-
-1;
 
 # vim: ts=4 sw=4 et:
