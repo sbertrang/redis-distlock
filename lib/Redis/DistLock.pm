@@ -267,6 +267,11 @@ string based on 24 random input bytes.
 
 Same as lock() but with a known value instead of a random string.
 
+=head2 lock( $resource, $ttl, $value, $extend )
+
+Same as lock() with a known value, but extends an existing lock instead of
+not returning anything.
+
 =head2 release( $lock )
 
 Release the previously acquired lock.
