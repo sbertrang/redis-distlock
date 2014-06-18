@@ -271,7 +271,8 @@ Same as lock() but with a known value instead of a random string.
 
 Same as lock(), but given C<$extend> is true it extends an existing
 lock or creates a new one instead of having to unlock first.
-Note that this option is EXPERIMENTAL and might change without warning!
+
+B<NOTE>: This option is EXPERIMENTAL and might change without warning!
 
 =head2 release( $lock )
 
