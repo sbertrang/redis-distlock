@@ -14,10 +14,7 @@ WriteMakefile(
         "Time::HiRes"  => 0,
     },
     ABSTRACT_FROM  => "lib/Redis/DistLock.pm",
-    AUTHOR         => [
-        'Simon Bertrang <janus@cpan.org>',
-        'Ryan Bastic <ryan@bastic.net>',
-    ],
+    AUTHOR         => 'Simon Bertrang <janus@cpan.org>, Ryan Bastic <ryan@bastic.net>',
     META_MERGE     => {
         resources      => {
             license        => 'http://dev.perl.org/licenses/',

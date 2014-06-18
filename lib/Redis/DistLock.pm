@@ -292,17 +292,17 @@ would like to express their gratitude.
 
 =item *
 
-Simon Bertrang, E<lt>janus@cpan.orgE<gt>
+Simon Bertrang E<lt>janus@cpan.orgE<gt>
 
 =item *
 
-Ryan Bastic, E<lt>ryan@bastic.netE<gt>
+Ryan Bastic E<lt>ryan@bastic.netE<gt>
 
 =back
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2014 by Simon Bertrang
+Copyright (C) 2014 by Simon Bertrang, Ryan Bastic
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
