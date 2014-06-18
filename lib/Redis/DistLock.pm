@@ -269,8 +269,8 @@ Same as lock() but with a known value instead of a random string.
 
 =head2 lock( $resource, $ttl, $value, $extend )
 
-Same as lock() with a known value, but extends an existing lock instead of
-not returning anything.
+Same as lock(), but given C<$extend> is true it extends an existing
+lock or creates a new one instead of having to unlock first.
 
 =head2 release( $lock )
 
