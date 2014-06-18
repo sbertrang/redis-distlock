@@ -1,5 +1,8 @@
 Revision history for Perl extension Redis::DistLock.
 
+0.06  Wed Jun 18 14:10:11 CEST 2014
+	- add experimental option to extend existing locks
+
 0.05  Sat Jun 14 16:10:50 CEST 2014
 	- add license and bucktracker link
 
