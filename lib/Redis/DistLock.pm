@@ -23,8 +23,10 @@ end
 ' }
 sub RELEASE_SHA1()      { sha1_hex( RELEASE_SCRIPT ) }
 sub EXTEND_SCRIPT()     { '
-if redis.call( "set", KEYS[1], ARGV[1], "XX", "PX", ARGV[2] ) then
-    return "OK"
+if redis.call( "get", KEYS[1] ) == ARGV[1] then
+    if redis.call( "set", KEYS[1], ARGV[1], "XX", "PX", ARGV[2] ) then
+        return "OK"
+    end
 else
     return redis.call( "set", KEYS[1], ARGV[1], "NX", "PX", ARGV[2] )
 end
